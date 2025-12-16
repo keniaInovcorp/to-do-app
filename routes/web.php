@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -14,4 +15,8 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    Route::resource('tasks', TaskController::class);
+    Route::post('tasks/{task}/toggle-status', [TaskController::class, 'toggleStatus'])
+        ->name('tasks.toggle-status');
 });
