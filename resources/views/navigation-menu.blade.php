@@ -15,9 +15,6 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
                     <x-nav-link href="{{ route('tasks.index') }}" :active="request()->routeIs('tasks.*')">
                         {{ __('Tarefas') }}
                     </x-nav-link>
@@ -29,8 +26,12 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 focus:outline-none transition duration-150 ease-in-out">
-                            <div class="w-10 h-10 rounded-full overflow-hidden">
-                                <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" class="w-full h-full object-cover" />
+                            <div class="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center {{ Auth::user()->profile_photo_path ? '' : Auth::user()->initial_color }}">
+                                @if(Auth::user()->profile_photo_path)
+                                    <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" class="w-full h-full object-cover" />
+                                @else
+                                    <span class="text-white font-semibold text-lg">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+                                @endif
                             </div>
                         </button>
                     </x-slot>
@@ -68,9 +69,6 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
             <x-responsive-nav-link href="{{ route('tasks.index') }}" :active="request()->routeIs('tasks.*')">
                 {{ __('Tarefas') }}
             </x-responsive-nav-link>

@@ -10,32 +10,50 @@
     <x-slot name="form">
         <!-- Profile Photo -->
         @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
-            <div x-data="{photoName: null, photoPreview: null}" class="col-span-6 sm:col-span-4">
+            <div x-data="{photoName: null, photoPreview: null}" 
+                 x-init="
+                    $wire.on('saved', () => {
+                        photoPreview = null;
+                        photoName = null;
+                    });
+                    $wire.on('refresh-navigation-menu', () => {
+                        photoPreview = null;
+                        photoName = null;
+                    });
+                 " 
+                 class="col-span-6 sm:col-span-4">
                 <!-- Profile Photo File Input -->
                 <input type="file" id="photo" class="hidden"
-                            wire:model.live="photo"
+                            wire:model="photo"
+                            accept="image/jpeg,image/png,image/jpg,image/gif"
                             x-ref="photo"
                             x-on:change="
-                                    photoName = $refs.photo.files[0].name;
-                                    const reader = new FileReader();
-                                    reader.onload = (e) => {
-                                        photoPreview = e.target.result;
-                                    };
-                                    reader.readAsDataURL($refs.photo.files[0]);
+                                    if ($refs.photo.files && $refs.photo.files[0]) {
+                                        photoName = $refs.photo.files[0].name;
+                                        const reader = new FileReader();
+                                        reader.onload = (e) => {
+                                            photoPreview = e.target.result;
+                                        };
+                                        reader.readAsDataURL($refs.photo.files[0]);
+                                    }
                             " />
 
                 <x-label for="photo" value="{{ __('Photo') }}" />
 
                 <!-- Current Profile Photo -->
                 <div class="mt-2" x-show="! photoPreview">
-                    <img src="{{ $this->user->profile_photo_url }}" alt="{{ $this->user->name }}" class="rounded-full size-20 object-cover">
+                    @if($this->user->profile_photo_path)
+                        <img src="{{ $this->user->profile_photo_url }}" alt="{{ $this->user->name }}" class="rounded-full size-20 object-cover border-2 border-gray-200">
+                    @else
+                        <div class="rounded-full size-20 flex items-center justify-center {{ $this->user->initial_color }} border-2 border-gray-200">
+                            <span class="text-white font-semibold text-3xl">{{ strtoupper(substr($this->user->name, 0, 1)) }}</span>
+                        </div>
+                    @endif
                 </div>
 
                 <!-- New Profile Photo Preview -->
-                <div class="mt-2" x-show="photoPreview" style="display: none;">
-                    <span class="block rounded-full size-20 bg-cover bg-no-repeat bg-center"
-                          x-bind:style="'background-image: url(\'' + photoPreview + '\');'">
-                    </span>
+                <div class="mt-2" x-show="photoPreview" style="display: none;" x-cloak>
+                    <img :src="photoPreview" alt="Preview" class="rounded-full size-20 object-cover border-2 border-gray-200">
                 </div>
 
                 <x-secondary-button class="mt-2 me-2" type="button" x-on:click.prevent="$refs.photo.click()">
@@ -49,6 +67,11 @@
                 @endif
 
                 <x-input-error for="photo" class="mt-2" />
+                
+                <!-- Upload Progress -->
+                <div wire:loading wire:target="photo" class="mt-2">
+                    <div class="text-sm text-gray-600">Uploading photo...</div>
+                </div>
             </div>
         @endif
 
@@ -88,8 +111,9 @@
             {{ __('Saved.') }}
         </x-action-message>
 
-        <x-button wire:loading.attr="disabled" wire:target="photo">
-            {{ __('Save') }}
+        <x-button wire:loading.attr="disabled" wire:target="photo,updateProfileInformation">
+            <span wire:loading.remove wire:target="photo,updateProfileInformation">{{ __('Save') }}</span>
+            <span wire:loading wire:target="photo,updateProfileInformation">{{ __('Saving...') }}</span>
         </x-button>
     </x-slot>
 </x-form-section>

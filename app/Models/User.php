@@ -82,4 +82,47 @@ class User extends Authenticatable
     {
         return $this->hasMany(Task::class);
     }
+
+    /**
+     * Get the initial color gradient classes for the user's avatar.
+     *
+     * Returns consistent gradient colors based on the first letter of the name.
+     *
+     * @return string Tailwind CSS gradient classes.
+     */
+    public function getInitialColorAttribute(): string
+    {
+        // Using solid dark colors instead of gradients for better contrast
+        $colors = [
+            'A' => 'bg-blue-800',
+            'B' => 'bg-purple-800',
+            'C' => 'bg-green-800',
+            'D' => 'bg-yellow-800',
+            'E' => 'bg-red-800',
+            'F' => 'bg-indigo-800',
+            'G' => 'bg-teal-800',
+            'H' => 'bg-pink-800',
+            'I' => 'bg-violet-800',
+            'J' => 'bg-amber-800',
+            'K' => 'bg-blue-900',
+            'L' => 'bg-green-900',
+            'M' => 'bg-purple-900',
+            'N' => 'bg-red-900',
+            'O' => 'bg-orange-800',
+            'P' => 'bg-cyan-800',
+            'Q' => 'bg-emerald-800',
+            'R' => 'bg-rose-800',
+            'S' => 'bg-indigo-900',
+            'T' => 'bg-teal-900',
+            'U' => 'bg-violet-900',
+            'V' => 'bg-pink-900',
+            'W' => 'bg-blue-800',
+            'X' => 'bg-green-800',
+            'Y' => 'bg-yellow-800',
+            'Z' => 'bg-purple-800',
+        ];
+
+        $initial = strtoupper(substr($this->name, 0, 1));
+        return $colors[$initial] ?? 'bg-gray-800';
+    }
 }

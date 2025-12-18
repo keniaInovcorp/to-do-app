@@ -79,15 +79,9 @@
                                     <form action="{{ route('tasks.toggle-status', $task) }}" method="POST" class="inline">
                                         @csrf
                                         <button type="submit" class="w-8 h-8 rounded-full flex items-center justify-center {{ $task->isCompleted() ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-200 hover:bg-gray-300' }} text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                            @if($task->isCompleted())
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                                                </svg>
-                                            @else
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                                </svg>
-                                            @endif
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                            </svg>
                                         </button>
                                     </form>
                                 </div>
