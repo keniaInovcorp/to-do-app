@@ -28,10 +28,19 @@
             </div>
 
             <div>
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Filtrar</button>
+                <select v-model="filters.dueDate" class="px-4 py-2 pr-12 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" style="min-width: 200px;">
+                    <option value="all">Todas as Datas</option>
+                    <option value="today">Hoje</option>
+                    <option value="this_week">Esta Semana</option>
+                    <option value="this_month">Este Mês</option>
+                    <option value="overdue">Atrasadas</option>
+                    <option value="no_date">Sem Data</option>
+                </select>
             </div>
-            <div v-if="hasActiveFilters">
-                <a :href="clearUrl" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">Limpar</a>
+
+            <div class="flex gap-2">
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Filtrar</button>
+                <a v-if="hasActiveFilters" :href="clearUrl" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">Limpar</a>
             </div>
         </form>
     </div>
@@ -56,12 +65,14 @@ const filters = ref({
     search: getUrlParam('search') || '',
     status: getUrlParam('status') || 'all',
     priority: getUrlParam('priority') || 'all',
+    dueDate: getUrlParam('due_date') || 'all',
 });
 
 const hasActiveFilters = computed(() => {
     return filters.value.search ||
            filters.value.status !== 'all' ||
-           filters.value.priority !== 'all';
+           filters.value.priority !== 'all' ||
+           filters.value.dueDate !== 'all';
 });
 
 const applyFilters = () => {
@@ -75,6 +86,9 @@ const applyFilters = () => {
     }
     if (filters.value.priority !== 'all') {
         params.append('priority', filters.value.priority);
+    }
+    if (filters.value.dueDate !== 'all') {
+        params.append('due_date', filters.value.dueDate);
     }
 
     window.location.href = `/tasks?${params.toString()}`;

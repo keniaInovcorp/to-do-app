@@ -36,6 +36,32 @@ class TaskController extends Controller
             });
         }
 
+        // Filter by due date
+        if ($request->has('due_date') && $request->due_date !== 'all') {
+            $today = now()->startOfDay();
+            $endOfWeek = now()->endOfWeek();
+            $endOfMonth = now()->endOfMonth();
+
+            switch ($request->due_date) {
+                case 'today':
+                    $query->whereDate('due_date', $today);
+                    break;
+                case 'this_week':
+                    $query->whereBetween('due_date', [$today, $endOfWeek]);
+                    break;
+                case 'this_month':
+                    $query->whereBetween('due_date', [$today, $endOfMonth]);
+                    break;
+                case 'overdue':
+                    $query->where('due_date', '<', $today)
+                          ->where('status', '!=', 'completed');
+                    break;
+                case 'no_date':
+                    $query->whereNull('due_date');
+                    break;
+            }
+        }
+
         $tasks = $query->paginate(10);
 
         return view('tasks.index', compact('tasks'));
