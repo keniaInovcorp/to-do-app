@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+    <div class="bg-white rounded-lg shadow-lg p-4 mb-1 mt-4">
         <form @submit.prevent="applyFilters" class="flex flex-wrap gap-4">
             <div class="flex-1 min-w-[200px]">
                 <input

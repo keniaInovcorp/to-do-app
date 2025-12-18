@@ -37,27 +37,34 @@ document.addEventListener('DOMContentLoaded', () => {
     if (taskListElement) {
         try {
             const initialTasks = JSON.parse(taskListElement.dataset.initialTasks || '[]');
-            const createUrl = taskListElement.dataset.createUrl || '/tasks/create';
             mountComponent('task-list', TaskList, {
-                initialTasks,
-                createUrl
+                initialTasks
             });
         } catch (error) {
             console.error('Erro ao parsear tarefas iniciais:', error);
         }
     }
 
-    // Mount DashboardStats if element exists
-    const dashboardStatsElement = document.getElementById('dashboard-stats');
-    if (dashboardStatsElement) {
-        const total = parseInt(dashboardStatsElement.dataset.total || 0);
-        const pending = parseInt(dashboardStatsElement.dataset.pending || 0);
-        const completed = parseInt(dashboardStatsElement.dataset.completed || 0);
+           // Mount DashboardStats if element exists
+           const dashboardStatsElement = document.getElementById('dashboard-stats');
+           if (dashboardStatsElement) {
+               const total = parseInt(dashboardStatsElement.dataset.total || 0);
+               const pending = parseInt(dashboardStatsElement.dataset.pending || 0);
+               const completed = parseInt(dashboardStatsElement.dataset.completed || 0);
+               
+               mountComponent('dashboard-stats', DashboardStats, {
+                   initialTotal: total,
+                   initialPending: pending,
+                   initialCompleted: completed,
+               });
+           }
 
-        mountComponent('dashboard-stats', DashboardStats, {
-            initialTotal: total,
-            initialPending: pending,
-            initialCompleted: completed,
-        });
-    }
-});
+           // Handle create task button click
+           const createTaskBtn = document.getElementById('create-task-btn');
+           if (createTaskBtn) {
+               createTaskBtn.addEventListener('click', () => {
+                   // Dispatch custom event to open create modal
+                   window.dispatchEvent(new CustomEvent('open-create-task-modal'));
+               });
+           }
+       });

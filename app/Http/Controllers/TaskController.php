@@ -70,11 +70,11 @@ class TaskController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return View
+     * @return RedirectResponse
      */
-    public function create(): View
+    public function create(): RedirectResponse
     {
-        return view('tasks.create');
+        return redirect()->route('tasks.index');
     }
 
     /**
@@ -83,7 +83,7 @@ class TaskController extends Controller
      * @param Request $request
      * @return RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -93,6 +93,14 @@ class TaskController extends Controller
         ]);
 
         $task = $this->authUser()->tasks()->create($validated);
+        $task->refresh();
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'message' => 'Tarefa criada com sucesso!',
+                'task' => $task,
+            ]);
+        }
 
         return redirect()->route('tasks.index')
             ->with('success', 'Tarefa criada com sucesso!');
@@ -102,24 +110,24 @@ class TaskController extends Controller
      * Display the specified resource.
      *
      * @param Task $task
-     * @return View
+     * @return RedirectResponse
      */
-    public function show(Task $task): View
+    public function show(Task $task): RedirectResponse
     {
         $this->authorize('view', $task);
-        return view('tasks.show', compact('task'));
+        return redirect()->route('tasks.index');
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param Task $task
-     * @return View
+     * @return RedirectResponse
      */
-    public function edit(Task $task): View
+    public function edit(Task $task): RedirectResponse
     {
         $this->authorize('update', $task);
-        return view('tasks.edit', compact('task'));
+        return redirect()->route('tasks.index');
     }
 
     /**
@@ -129,7 +137,7 @@ class TaskController extends Controller
      * @param Task $task
      * @return RedirectResponse
      */
-    public function update(Request $request, Task $task): RedirectResponse
+    public function update(Request $request, Task $task): RedirectResponse|JsonResponse
     {
         $this->authorize('update', $task);
 
@@ -142,6 +150,14 @@ class TaskController extends Controller
         ]);
 
         $task->update($validated);
+        $task->refresh();
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'message' => 'Tarefa atualizada com sucesso!',
+                'task' => $task,
+            ]);
+        }
 
         return redirect()->route('tasks.index')
             ->with('success', 'Tarefa atualizada com sucesso!');
