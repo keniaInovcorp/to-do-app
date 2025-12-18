@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -124,12 +125,19 @@ class TaskController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Task $task
-     * @return RedirectResponse
+     * @return RedirectResponse|JsonResponse
      */
-    public function destroy(Task $task): RedirectResponse
+    public function destroy(Task $task)
     {
         $this->authorize('delete', $task);
         $task->delete();
+
+        if (request()->expectsJson() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Tarefa excluída com sucesso!',
+            ]);
+        }
 
         return redirect()->route('tasks.index')
             ->with('success', 'Tarefa excluída com sucesso!');
@@ -139,15 +147,23 @@ class TaskController extends Controller
      * Toggle the status of the specified task.
      *
      * @param Task $task
-     * @return RedirectResponse
+     * @return RedirectResponse|JsonResponse
      */
-    public function toggleStatus(Task $task): RedirectResponse
+    public function toggleStatus(Task $task)
     {
         $this->authorize('update', $task);
 
         $task->update([
             'status' => $task->status === 'completed' ? 'pending' : 'completed'
         ]);
+
+        if (request()->expectsJson() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Status da tarefa atualizado!',
+                'task' => $task->fresh(),
+            ]);
+        }
 
         return redirect()->back()
             ->with('success', 'Status da tarefa atualizado!');

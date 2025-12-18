@@ -9,9 +9,11 @@ export default {
         './vendor/laravel/jetstream/**/*.blade.php',
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
+        './resources/js/**/*.vue',
     ],
 
     safelist: [
+        // Background colors for user initials
         'bg-blue-800',
         'bg-blue-900',
         'bg-purple-800',
@@ -37,6 +39,18 @@ export default {
         'bg-rose-800',
         'bg-gray-800',
         'bg-gray-900',
+        // Priority badge colors
+        'bg-red-100',
+        'text-red-800',
+        'bg-yellow-100',
+        'text-yellow-800',
+        'bg-blue-100',
+        'text-blue-800',
+        'bg-gray-100',
+        'text-gray-800',
+        // Status badge colors
+        'bg-green-100',
+        'text-green-800',
     ],
 
     theme: {

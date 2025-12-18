@@ -20,8 +20,14 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
                             </div>
-                            <div class="text-3xl font-bold text-blue-600">0</div>
-                            <div class="text-sm text-gray-500 mt-1">Ainda não há tarefas</div>
+                            <div class="text-3xl font-bold text-blue-600">{{ $totalTasks }}</div>
+                            <div class="text-sm text-gray-500 mt-1">
+                                @if($totalTasks === 0)
+                                    Ainda não há tarefas
+                                @else
+                                    {{ $totalTasks }} tarefa{{ $totalTasks !== 1 ? 's' : '' }}
+                                @endif
+                            </div>
                         </div>
 
                         <div class="bg-yellow-50 p-6 rounded-lg shadow">
@@ -31,8 +37,14 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                                 </svg>
                             </div>
-                            <div class="text-3xl font-bold text-yellow-600">0</div>
-                            <div class="text-sm text-gray-500 mt-1">Nenhuma pendente</div>
+                            <div class="text-3xl font-bold text-yellow-600">{{ $pendingTasks }}</div>
+                            <div class="text-sm text-gray-500 mt-1">
+                                @if($pendingTasks === 0)
+                                    Nenhuma pendente
+                                @else
+                                    {{ $pendingTasks }} pendente{{ $pendingTasks !== 1 ? 's' : '' }}
+                                @endif
+                            </div>
                         </div>
 
                         <div class="bg-green-50 p-6 rounded-lg shadow">
@@ -42,8 +54,14 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                 </svg>
                             </div>
-                            <div class="text-3xl font-bold text-green-600">0</div>
-                            <div class="text-sm text-gray-500 mt-1">Nenhuma concluída</div>
+                            <div class="text-3xl font-bold text-green-600">{{ $completedTasks }}</div>
+                            <div class="text-sm text-gray-500 mt-1">
+                                @if($completedTasks === 0)
+                                    Nenhuma concluída
+                                @else
+                                    {{ $completedTasks }} concluída{{ $completedTasks !== 1 ? 's' : '' }}
+                                @endif
+                            </div>
                         </div>
                     </div>
 
@@ -56,4 +74,5 @@
             </div>
         </div>
     </div>
+
 </x-app-layout>
