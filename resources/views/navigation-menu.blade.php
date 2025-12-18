@@ -26,11 +26,16 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 focus:outline-none transition duration-150 ease-in-out">
-                            <div class="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center {{ Auth::user()->profile_photo_path ? '' : Auth::user()->initial_color }}">
-                                @if(Auth::user()->profile_photo_path)
-                                    <img src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" class="w-full h-full object-cover" />
+                            @php
+                                $user = Auth::user();
+                                $photoUrl = $user->profile_photo_path ? asset('storage/' . $user->profile_photo_path) : null;
+                            @endphp
+                            <div class="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center {{ $photoUrl ? '' : $user->initial_color }}">
+                                @if($photoUrl)
+                                    <img src="{{ $photoUrl }}" alt="{{ $user->name }}" class="w-full h-full object-cover" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <span class="text-white font-semibold text-lg" style="display: none;">{{ strtoupper(substr($user->name, 0, 1)) }}</span>
                                 @else
-                                    <span class="text-white font-semibold text-lg">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+                                    <span class="text-white font-semibold text-lg">{{ strtoupper(substr($user->name, 0, 1)) }}</span>
                                 @endif
                             </div>
                         </button>
